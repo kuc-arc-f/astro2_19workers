@@ -22,7 +22,18 @@ console.log(req);
         if(resulte.success !== true) {
           console.error("Error, /create");
           throw new Error('Error , create');
-        }      
+        }
+        //id
+        const sql_id = "SELECT last_insert_rowid() AS id;";
+        const resultId = await env.DB.prepare(sql_id).all();
+//console.log(resultId);
+        if(resultId.results.length < 1) {
+          console.error("Error, resultId.length < 1");
+          throw new Error('Error , create, SELECT last_insert_rowid');
+        }
+        const item_id = resultId.results[0].id;
+console.log("item_id=", item_id);
+        req.id = item_id;
       }            
       return Response.json({ret: "OK", data: req});
     } catch (e) {
